@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JVG Dairy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            display: block;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Welcome to JVG Dairy</h1>
+    <!-- Check if there's a success message -->
+    {% if success_message %}
+        <script>
+            // Display an alert with the success message
+            alert("{{ success_message }}");
+
+            // Redirect to the homepage without success message
+            window.location.href = "/";
+        </script>
+    {% endif %}
+    <p>Choose task:</p>
+    <ul>
+         <li><a href="/daily_milk_register">Daily Entry</a></li>
+         <li><a href="/generate_receipt">Receipt</a></li>
+         <li><a href="/member_new_register">Member register</a></li>
+    </ul>
+<footer>
+Design and developed by<br>Karthik subramaniam<br>Jothiampatti<br>contact: 9698516141<br>email: karthikmi@hotmail.com
+</footer>
+</body>
+</html>
+

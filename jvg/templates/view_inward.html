@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Receipts</title>
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%; /* Adjust the max-width as needed */
+            margin: 0 auto;
+            padding: 5px; /* Adjust padding as needed */
+        }
+
+        .receipt {
+            height: 670px; /* Adjust the height of each receipt */
+            width: 31%; /* Adjust the width of each receipt */
+            float: left;
+            margin-right: 2%; /* Adjust the margin between receipts */
+            margin-bottom: 20px; /* Adjust the vertical margin between receipts */
+            border: 1px solid #ccc;
+            padding: 5px;
+            box-sizing: border-box;
+            overflow: hidden; /* Ensures the content does not overflow */
+        }
+
+
+        h1 {
+            text-align: center;
+            font-size: 18px; 
+            margin-bottom: 5px; /* Adjust the margin bottom */
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 14px; 
+            margin-top: 5px; /* Adjust the margin top */
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 12px; 
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    {% for member_id, receipts in individual_receipts.items() %}
+    <div class="receipt">
+        <h1>JVG FARM</h1>
+        <h2>Jothaiampatti</h2>
+        <h3>MEMBER RECEIPT</h3>
+        <p>Name: {{ member_id[3:] }}</p>
+        <p>ID: {{ member_id[:3] }}</p>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Shift</th> <!-- Modified to show only first letter uppercase -->
+                <th>QTY</th>
+                <th>FAT</th>
+                <th>SNF</th>
+                <th>Rate</th>
+                <th>Amount</th>
+            </tr>
+            {% for receipt in receipts %}
+            <tr>
+                <td>{{ receipt[0] }}</td>
+                <td>{{ receipt[1][0] | upper }}</td> <!-- Show only first letter in uppercase -->
+                <td>{{ receipt[3] }}</td>
+                <td>{{ receipt[4] }}</td>
+                <td>{{ receipt[5] }}</td>
+                <td>{{ receipt[6] }}</td>
+                <td>{{ receipt[7] }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2"><strong>Average:</strong></td>
+                <td id="avg-quantity"></td>
+                <td id="avg-fat"></td>
+                <td id="avg-smf"></td>
+                <td id="avg-rate"></td>
+                <td id="avg-amount"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Total:</strong></td>
+                <td id="total-quantity"></td>
+                <td id="total-fat"></td>
+                <td id="total-smf"></td>
+                <td id="total-rate"></td>
+                <td id="total-amount"></td>
+            </tr>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const receipts = document.querySelectorAll('.receipt');
+
+        receipts.forEach(receipt => {
+            const rows = receipt.querySelectorAll('tr');
+            let numReceipts = rows.length - 3; // Exclude header, total, and average rows
+
+            let totalQuantity = 0;
+            let totalFat = 0;
+            let totalSmf = 0;
+            let totalRate = 0;
+            let totalAmount = 0;
+
+            // Calculate totals for each member's receipts
+            for (let i = 1; i < rows.length - 2; i++) {
+                const cells = rows[i].querySelectorAll('td');
+                const quantity = parseFloat(cells[2].innerText);
+                const fat = parseFloat(cells[3].innerText);
+                const smf = parseFloat(cells[4].innerText);
+                const rate = parseFloat(cells[5].innerText);
+                const amount = parseFloat(cells[6].innerText);
+
+                totalQuantity += quantity;
+                totalFat += fat;
+                totalSmf += smf;
+                totalRate += rate;
+                totalAmount += amount;
+            }
+
+            // Calculate and display averages for each member's receipts
+            const avgRow = rows[rows.length - 2].querySelectorAll('td'); // Changed to second last row
+            avgRow[1].innerText = (totalQuantity / numReceipts).toFixed(2);
+            avgRow[2].innerText = (totalFat / numReceipts).toFixed(2);
+            avgRow[3].innerText = (totalSmf / numReceipts).toFixed(2);
+            avgRow[4].innerText = (totalRate / numReceipts).toFixed(2);
+            avgRow[5].innerText = (totalAmount / numReceipts).toFixed(2);
+
+            // Display totals for each member's receipts
+            const totalRow = rows[rows.length - 1].querySelectorAll('td'); // Changed to last row
+            totalRow[1].innerText = totalQuantity.toFixed(2);
+            totalRow[2].innerText = totalFat.toFixed(2);
+            totalRow[3].innerText = totalSmf.toFixed(2);
+            totalRow[4].innerText = totalRate.toFixed(2);
+            totalRow[5].innerText = totalAmount.toFixed(2);
+        });
+    });
+</script>
+</body>
+</html>
+

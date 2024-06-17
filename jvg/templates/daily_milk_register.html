@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Milk Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 10px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success-message {
+            text-align: center;
+            color: green;
+            margin-top: 10px;
+        }
+        /* Home button style */
+        .home-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daily Milk Register</h1>
+
+    <form action="/daily_milk_register" method="post">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="{{ last_date }}" required><br>
+
+        <label for="season">Season:</label>
+        <select id="season" name="season" required>
+            <option value="morning" {% if last_season == 'morning' %} selected {% endif %}>Morning</option>
+            <option value="evening" {% if last_season == 'evening' %} selected {% endif %}>Evening</option>
+        </select><br>
+
+        <!-- Hidden input fields to store last submitted date and season -->
+        <input type="hidden" name="last_date" value="{{ last_date }}">
+        <input type="hidden" name="last_season" value="{{ last_season }}">
+
+        <label for="id">Select ID:</label>
+        <select id="id" name="id" required>
+            <option value="">None</option>
+            {% for id in ids %}
+                <option value="{{ id }}">{{ id }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required><br>
+        
+        <label for="fat">Fat:</label>
+        <input type="number" id="fat" name="fat" step="0.01" required><br>
+        
+        <label for="smf">SMF:</label>
+        <input type="number" id="smf" name="smf" step="0.01" required><br>
+
+        <!-- Display rate and total amount -->
+        <label for="rate">Rate:</label>
+        <input type="text" id="rate" name="rate" value="{{ rate }}" readonly><br>
+
+        <label for="total_amount">Total Amount:</label>
+        <input type="text" id="total_amount" name="total_amount" value="{{ total_amount }}" readonly><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+        {% if success_message %}
+        <div class="success-message" id="success-message">{{ success_message }}</div>
+        {% endif %}
+
+        <button class="home-button" onclick="window.location.href='/'">Home</button>
+    </div>
+
+    <script>
+        // Hide success message after 3 seconds
+        window.onload = function() {
+            var successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                }, 3000); // 3000 milliseconds = 3 seconds
+            }
+        };
+    </script>
+    <script>
+        window.onload = function() {
+            // Calculate rate and total amount based on FAT, SMF, and quantity
+            var fatInput = document.getElementById('fat');
+            var smfInput = document.getElementById('smf');
+            var quantityInput = document.getElementById('quantity');
+            var rateInput = document.getElementById('rate');
+            var totalAmountInput = document.getElementById('total_amount');
+
+            fatInput.addEventListener('change', calculateRateAndTotalAmount);
+            smfInput.addEventListener('change', calculateRateAndTotalAmount);
+            quantityInput.addEventListener('change', calculateRateAndTotalAmount);
+
+            function calculateRateAndTotalAmount() {
+                var fat = parseFloat(fatInput.value);
+                var smf = parseFloat(smfInput.value);
+                var quantity = parseFloat(quantityInput.value);
+                
+                var rate;
+                var totalAmount;
+                
+                if (fat >= 4 && smf >= 8) {
+                    rate = 10;
+                } else if ((fat >= 4 && smf < 8) || (fat < 4 && smf >= 8)) {
+                    rate = 5;
+                } else {
+                    rate = 0;
+                }
+
+                rateInput.value = rate;
+
+                totalAmount = rate * quantity;
+                totalAmountInput.value = totalAmount.toFixed(2);
+            }
+        }
+    </script>
+</body>
+</html>
+
